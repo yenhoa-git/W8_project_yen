@@ -77,3 +77,26 @@ class DataProcessingJob(Job):
         print(f"Processing dataset {self.dataset}...")
 
         # FIX (models.py): removed self.mark_done() here — same reason as EmailJob above
+
+
+#activity 2: PriorityJob - Add Job Prioritisation
+class PriorityJob(Job):
+    """Child class: simulates task prioritisation."""
+
+    def __init__(self, job_id: int, description: str, priority: int) -> None:
+        # Gọi constructor của class cha (Job) để kế thừa job_id, description và status
+        super().__init__(job_id, description)
+        
+        # Bổ sung thuộc tính độ ưu tiên (ví dụ: 1 = Thấp, 2 = Trung bình, 3 = Cao)
+        self.priority = priority
+
+    def execute(self) -> None:
+        # Thực hiện logic chạy job dựa trên độ ưu tiên
+        print(f"⭐ [Priority: {self.priority}] Executing high-priority job: {self.description}...")
+        
+        # Lưu ý: Giữ đúng nguyên tắc FIX của bạn, KHÔNG gọi self.mark_done() ở đây.
+        # Trạng thái status sẽ do TaskManager tự cập nhật sau.
+
+    def __repr__(self) -> str:
+        # Ghi đè lại hàm hiển thị để nhìn rõ độ ưu tiên khi debug
+        return f"<PriorityJob id={self.job_id} priority={self.priority} status={self.status}>"
