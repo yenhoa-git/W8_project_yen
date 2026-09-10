@@ -5,34 +5,52 @@ Polymorphism: each subclass implements its own execute().
 """
 
 
-class Job:
+import time
+from typing import List
 
+class Job:
     """Parent/base class shared by all job types."""
 
     def __init__(self, job_id: int, description: str) -> None:
-
         self.job_id = job_id
-
         self.description = description
+        
+        # --- CODE ACTIVITY 3: ĐÓNG GÓI & LOGS ---
+        self._status = "pending"  # Thuộc tính ẩn (protected)
+        self._logs: List[str] = [] # Danh sách lưu log nội bộ
+        self.add_log("Job initialized with status: pending")
 
-        self.status = "pending"
+    # Getter cho status
+    @property
+    def status(self) -> str:
+        return self._status
 
+    # Setter cho status (Mỗi khi đổi status sẽ tự động ghi Log)
+    @status.setter
+    def status(self, new_status: str) -> None:
+        old_status = self._status
+        self._status = new_status
+        self.add_log(f"Status changed from '{old_status}' to '{new_status}'")
+
+    # Hàm nội bộ để ghi log kèm mốc thời gian
+    def add_log(self, message: str) -> None:
+        timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+        self._logs.append(f"[{timestamp}] {message}")
+
+    # Hàm công khai (Expose method) để lấy toàn bộ log ra ngoài
+    def get_logs(self) -> List[str]:
+        return self._logs
 
     def execute(self) -> None:
-
         """Must be overridden by subclasses."""
-
         raise NotImplementedError("Each job must implement its own execution logic.")
 
-
     def mark_done(self) -> None:
-
-        self.status = "completed"
-
+        # Sử dụng setter thông qua self.status để kích hoạt ghi log tự động
+        self.status = "completed" 
 
     def __repr__(self) -> str:
-
-        return f"<Job id={self.job_id} status={self.status}desc='{self.description}'>"
+        return f"<Job id={self.job_id} status={self.status} desc='{self.description}'>"
 
 
 
